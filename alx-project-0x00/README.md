@@ -1,40 +1,214 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Airbnb Clone – Setup and Component Architecture with Next.js
 
-## Getting Started
+Welcome to the **alx-project-0x00-setup** repository. This project scaffolds a basic Airbnb clone using the **Next.js framework** with **TypeScript**, **Tailwind CSS**, **ESLint**, and structured directory patterns. It focuses on building reusable components and understanding routing in a Next.js Pages Router setup.
 
-First, run the development server:
+---
+
+## 🚀 Getting Started
+
+### 1. Project Initialization
+
+We use the `create-next-app` CLI tool to scaffold this project with custom options:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx create-next-app@latest alx-project-0x00 --typescript
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**CLI Options Selected:**
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+* ✅ ESLint
+* ✅ Tailwind CSS
+* ✅ Import alias (`@/*`)
+* ❌ Use `/src` directory
+* ❌ Use App Router (we are using Pages Router)
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+After setup, navigate into the project directory and start the development server:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+cd alx-project-0x00
+npm run dev -- -p 3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Visit `http://localhost:3000` to view the app.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+```bash
+alx-project-0x00/
+│
+├── components/           # Reusable UI components
+│   ├── Card.tsx
+│   ├── Pill.tsx
+│   └── Button.tsx
+│
+├── interfaces/           # TypeScript interfaces
+│   └── index.ts
+│
+├── pages/                # Pages Router
+│   ├── index.tsx         # Home page
+│   ├── landing.tsx       # Custom route: /landing
+│   └── about.tsx         # Custom route: /about
+│
+├── public/
+│   └── assets/images/    # Static assets (e.g., house.png, star.png)
+│
+├── styles/
+├── tsconfig.json
+└── tailwind.config.js
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📌 Implemented Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### ✅ Basic Routing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Using Next.js **Pages Router**, we added the following routes:
+
+* `/` → Homepage
+* `/landing` → Landing Page
+* `/about` → About Page
+
+Example:
+
+```tsx
+// pages/landing.tsx
+import Card from "@/components/Card"
+
+const Landing: React.FC = () => (
+  <div>
+    <h1 className="text-xl font-extralight">Landing Page</h1>
+    <Card />
+    <Card />
+  </div>
+)
+export default Landing
+```
+
+---
+
+### 🧩 Reusable Components
+
+#### 1. `Pill.tsx`
+
+Displays a styled tag with dynamic text.
+
+```tsx
+import { PillProps } from "@/interfaces"
+
+const Pill: React.FC<PillProps> = ({ title }) => (
+  <div className="bg-[#F9F9F9] px-3 h-[27px] rounded-full flex justify-center items-center">
+    <p className="text-sm">{title}</p>
+  </div>
+)
+export default Pill
+```
+
+#### 2. `Card.tsx`
+
+Displays a listing card with a title, location, rating, and icon-enhanced meta data.
+
+* Uses `Pill` component
+* Imports images from `public/assets/images`
+
+```tsx
+import Image from "next/image"
+import Pill from "./Pill"
+import HOUSE_IMAGE from "@/public/assets/house.png"
+import STAR_IMAGE from "@/public/assets/star.png"
+...
+```
+
+#### 3. `Button.tsx` (Advanced)
+
+Accepts `title` and `style` props to render customizable buttons in different sizes and shapes:
+
+```tsx
+// Button.tsx
+import { ButtonProps } from "@/interfaces"
+
+const Button: React.FC<ButtonProps> = ({ title, style }) => (
+  <button className={`text-white px-4 py-2 ${style}`}>
+    {title}
+  </button>
+)
+export default Button
+```
+
+Used in `/landing` as:
+
+```tsx
+<Button title="Small Button" style="text-sm rounded-sm bg-blue-500" />
+<Button title="Medium Button" style="text-base rounded-md bg-green-500" />
+<Button title="Large Button" style="text-lg rounded-full bg-purple-500" />
+```
+
+---
+
+## 🔡 TypeScript Interfaces
+
+All component props are strongly typed and reusable through the `interfaces/index.ts` file.
+
+```ts
+// interfaces/index.ts
+export interface PillProps {
+  title: string
+}
+
+export interface ButtonProps {
+  title: string
+  style: string
+}
+```
+
+---
+
+## 🖼️ Assets
+
+Move image assets into:
+
+```
+public/assets/images/
+├── house.png
+└── star.png
+```
+
+They are statically served and used in `Card.tsx` via the `Image` component from `next/image`.
+
+---
+
+## 🧪 Running the Dev Server
+
+To view your application:
+
+```bash
+npm run dev -- -p 3000
+```
+
+Then open:
+
+* [http://localhost:3000](http://localhost:3000) – Home
+* [http://localhost:3000/landing](http://localhost:3000/landing) – Landing Page
+* [http://localhost:3000/about](http://localhost:3000/about) – About Page
+
+---
+
+## 📌 Highlights
+
+* ✔️ Clean modular component structure
+* ✔️ Props typing using TypeScript
+* ✔️ Tailwind CSS for rapid UI styling
+* ✔️ Static image serving
+* ✔️ Reusable buttons and UI blocks
+
+---
+
+## 📚 Future Improvements
+
+* Add navigation via `next/link`
+* Introduce layout components for consistent page structure
+* Fetch data dynamically with `getStaticProps` or `getServerSideProps`
+* Integrate App Router for more advanced features
+* Add form elements and interactivity
